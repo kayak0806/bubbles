@@ -1,12 +1,17 @@
-
+//*** Initializing ***
 // Extract bubbles
 var elm = document.getElementById("ocean");
 var kids = elm.getElementsByTagName("ul");
 var bubbles = kids[0].getElementsByTagName("li")
 
+// Create Bubble State objects
 
+
+
+//*** Objects ***
 // State: an x,y position and an x,y direction (default 1)
-function State(x,y, dirx, diry){
+function State(title, x,y, dirx, diry){
+	this.title = 'Dragons'
 	this.x = x
 	this.y = y
 
@@ -31,6 +36,7 @@ function randState(){
 	this.diry = randy/Math.abs(randy)
 }
 
+//*** Functions ***
 // Two positioning functions: place at a set location or a random one.
 function place(title,state){
 	for (var i=0; i<bubbles.length;i++){
@@ -64,7 +70,6 @@ function currentState(title){
 	}
 }
 
-
 // Set direction (given and random)
 function point(title, state){
 	for (var i=0; i<bubbles.length;i++){
@@ -86,12 +91,14 @@ function nextState(state){
 	state.dirx *= prob/Math.abs(prob)
 	state.diry *= prob/Math.abs(prob)
 
-	state.x += 1*state.dirx
-	state.y += 2*state.diry
+	state.x += 1
+	state.y += 2
 
 	return state
 }
 
+
+//*** Doing stuff ***
 // send bubbles to random locations
 placeRand('Dragons')
 placeRand("Mermaids")
@@ -107,8 +114,7 @@ function move(title){
 		var state = currentState(title)
 		state = nextState(state)
 		place(title,state)
-
-},100)}
+	},100)}
 
 // move('Dragons')
 
@@ -116,3 +122,10 @@ function move(title){
 var x = new State(0,0)
 x.x = 2
 // console.log(-0.3/Math.abs(-0.3))
+
+function Test(x){
+	this.x = x;
+}
+function Change(m){
+	m.x += 1;
+}
