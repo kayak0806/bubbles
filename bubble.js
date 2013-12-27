@@ -4,8 +4,14 @@ var elm = document.getElementById("ocean");
 var kids = elm.getElementsByTagName("ul");
 var bubbles = kids[0].getElementsByTagName("li")
 
-// Create Bubble State objects
+// Put Bubble State objects in 'dictionary'
+var bubbleStates = new Object
+for (var i = bubbles.length - 1; i >= 0; i--) {
+	var title = bubbles[i].getElementsByTagName("a")[0].getAttribute('title')
 
+	var state = new randState(title)
+	bubbleStates[title] = state	
+}
 
 
 //*** Objects ***
@@ -24,11 +30,12 @@ function State(title, x,y, dirx, diry){
 		this.diry = diry
 	}
 }
-function randState(){
+function randState(title){
+	this.title = title;
 	// rand*(windowWidth-((marginLeft-20)+(marginRight+160)))+(marginLeft-20)
-	this.x = Math.random()*(window.innerWidth-(20+160))+20
+	this.x = Math.round(Math.random()*(window.innerWidth-(20+160))+20)
 	// rand*(windowHeight-(marginTop+marginBottom))+marginTop
-	this.y = Math.random()*(window.innerHeight-(100+200))+100
+	this.y = Math.round(Math.random()*(window.innerHeight-(100+200))+100)
 	
 	var randx = Math.random()
 	var randy = Math.random()
@@ -37,11 +44,11 @@ function randState(){
 }
 
 //*** Functions ***
-// Two positioning functions: place at a set location or a random one.
-function place(title,state){
+// Update the css for the given bubble state
+function updateCSS(state){
 	for (var i=0; i<bubbles.length;i++){
 		var link = bubbles[i].getElementsByTagName("a")[0]
-		if (link.getAttribute("title")==title){
+		if (link.getAttribute("title")==state.title){
 			bubbles[i].style.left= state.x+'px';
 			bubbles[i].style.top= state.y+'px';
 			bubbles[i].style.dirx = state.dirx
@@ -49,83 +56,59 @@ function place(title,state){
 		}
 	}
 }
-function placeRand(title){
-	var state = new randState()
-	place(title, state)
+
+// Give a bubble state a random location
+function placeRand(state){
+	// rand*(windowWidth-((marginLeft-20)+(marginRight+160)))+(marginLeft-20)
+	state.x = Math.random()*(window.innerWidth-(20+160))+20
+	// rand*(windowHeight-(marginTop+marginBottom))+marginTop
+	state.y = Math.random()*(window.innerHeight-(100+200))+100
 }
 
-// Get current state of bubble
-function currentState(title){
-	for (var i=0; i<bubbles.length;i++){
-		var link = bubbles[i].getElementsByTagName("a")[0]
-		if (link.getAttribute("title")==title){
-			var state = new State(0,0)
-			state.x = parseFloat(bubbles[i].style.left)
-			state.y = parseFloat(bubbles[i].style.top)
-			state.dirx = bubbles[i].style.dirx
-			state.diry = bubbles[i].style.diry
-			console.log(bubbles[i].style.dirx)
-			return state
-		}
-	}
+// Give a state a new direction with probability prob
+function dirRand(state, prob){
+	var randx = Math.random()-prob
+	var randy = Math.random()-prob
+	state.dirx *= randx/Math.abs(randx)
+	state.diry *= randy/Math.abs(randy)
 }
 
-// Set direction (given and random)
-function point(title, state){
-	for (var i=0; i<bubbles.length;i++){
-		var link = bubbles[i].getElementsByTagName("a")[0]
-		if (link.getAttribute("title")==title){
-			bubbles[i].style.dirx= state.dirx;
-			bubbles[i].style.diry= state.diry;
-		}
-	}
-}
-function randPoint(title){
-	var state = randState
-	point(title, state)
+// Get state of bubble given title
+function getState(title){
+	return bubbleStates[title]
 }
 
 // Get next state of bubble
-function nextState(state){
-	var prob = Math.random()-.1
-	state.dirx *= prob/Math.abs(prob)
-	state.diry *= prob/Math.abs(prob)
+function updateState(state){
+	var prob = 0.05
+	dirRand(state, prob)
 
-	state.x += 1
-	state.y += 2
+	var margin = 0
+	// if near top edge
+	if (state.y < margin+90){state.diry = 1}
+	// if near bottom edge
+	if (state.y > window.innerHeight-margin-200){state.diry = -1}
+	// if near left edge
+	if (state.x < margin){state.dirx = 1}
+	// if near right edge
+	if (state.x > window.innerWidth - margin-200){state.dirx = -1}
 
-	return state
+	state.x += 1*state.dirx
+	state.y += 1*state.diry
 }
 
+//*** Doing stuff *** 
 
-//*** Doing stuff ***
-// send bubbles to random locations
-placeRand('Dragons')
-placeRand("Mermaids")
-placeRand("Griffins")
-placeRand("Unicorns")
-// send Dragons to 0,0
-place('Dragons',new State(0,0))
-
-
-// Make Dragons float across the screen
-function move(title){
+// Animate state
+function move(state){
 	setInterval(function() {
-		var state = currentState(title)
-		state = nextState(state)
-		place(title,state)
+		updateState(state)
+		updateCSS(state)
 	},100)}
 
-// move('Dragons')
-
-// print stuff
-var x = new State(0,0)
-x.x = 2
-// console.log(-0.3/Math.abs(-0.3))
-
-function Test(x){
-	this.x = x;
-}
-function Change(m){
-	m.x += 1;
+for (var key in bubbleStates){
+	state = getState(key)
+	updateState(state)
+	updateCSS(state)
+	move(getState(key))
 }
