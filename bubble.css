@@ -54,8 +54,6 @@ div {
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	dirx: 1;
-	diry: 1;
 }
 #ocean ul li:hover {
 	background-color: green;
