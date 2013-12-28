@@ -4,33 +4,23 @@ var elm = document.getElementById("ocean");
 var kids = elm.getElementsByTagName("ul");
 var bubbles = kids[0].getElementsByTagName("li")
 
+
+
 // Put Bubble State objects in 'dictionary'
 var bubbleStates = new Object
 for (var i = bubbles.length - 1; i >= 0; i--) {
 	var title = bubbles[i].getElementsByTagName("a")[0].getAttribute('title')
 
-	var state = new randState(title)
+	var state = new State(title)
 	bubbleStates[title] = state	
 }
 
 
 //*** Objects ***
-// State: an x,y position and an x,y direction (default 1)
-function State(title, x,y, dirx, diry){
-	this.title = 'Dragons'
-	this.x = x
-	this.y = y
+// State: A title, an x,y position, an x,y direction, and paused or not
+function State(title){
+	// title, x, y, dirx, diry, paused
 
-	if (typeof dirx == 'undefined'){
-		this.dirx = 1
-		this.diry = 1
-	}
-	else {
-		this.dirx = dirx
-		this.diry = diry
-	}
-}
-function randState(title){
 	this.title = title;
 	// rand*(windowWidth-((marginLeft-20)+(marginRight+160)))+(marginLeft-20)
 	this.x = Math.round(Math.random()*(window.innerWidth-(20+160))+20)
@@ -41,6 +31,8 @@ function randState(title){
 	var randy = Math.random()
 	this.dirx = randx/Math.abs(randx)
 	this.diry = randy/Math.abs(randy)
+
+	this.paused = false
 }
 
 //*** Functions ***
@@ -85,16 +77,26 @@ function updateState(state){
 
 	var margin = 0
 	// if near top edge
-	if (state.y < margin+90){state.diry = 1}
+	if (state.y < margin+90) 	state.diry = 1
 	// if near bottom edge
-	if (state.y > window.innerHeight-margin-200){state.diry = -1}
+	if (state.y > window.innerHeight-margin-200) 	state.diry = -1
 	// if near left edge
-	if (state.x < margin){state.dirx = 1}
+	if (state.x < margin) 		state.dirx = 1 
 	// if near right edge
-	if (state.x > window.innerWidth - margin-200){state.dirx = -1}
+	if (state.x > window.innerWidth - margin-200) 	state.dirx = -1
 
-	state.x += 1*state.dirx
-	state.y += 1*state.diry
+	if (!state.paused){
+		state.x += 1*state.dirx
+		state.y += 1*state.diry
+	}
+}
+
+// pause and play bubble
+function pause(state){
+	state.paused = true
+}
+function play(state){
+	state.paused = false
 }
 
 //*** Doing stuff *** 
@@ -106,9 +108,21 @@ function move(state){
 		updateCSS(state)
 	},100)}
 
+for (var i = bubbles.length - 1; i >= 0; i--) {
+	var title = bubbles[i].getElementsByTagName("a")[0].getAttribute('title')
+	bubbles[i].onmouseover=function() {
+		pause(getState(title)); 
+		console.log(title)
+	}
+	bubbles[i].onmouseout=function() {
+		play(getState(title)); 
+	}
+}
 for (var key in bubbleStates){
 	state = getState(key)
 	updateState(state)
 	updateCSS(state)
-	move(getState(key))
+	move(getState(key))	
 }
+
+// *** Playing ***

@@ -19,13 +19,28 @@ div {
 	padding: 0px;
 	margin: 0;
 	height: 90px;
-	border-radius: 0px 0px 30px 30px;
+	border-radius: 0px 0px 45px 45px;
 }
 #header h1 {
-	text-align: center;
+	text-align: left;
 	line-height: 45px;
 	letter-spacing: 10px;
 	text-transform: uppercase;
+	margin-left: 100px;
+}
+#sorter {
+	background-color: green;
+	padding: 0px;
+	margin: 0px;
+	width: 90px;
+	height: 90px;
+	border-radius: 90px;	
+
+}
+#sorter p{
+	text-align: center;
+	line-height: 57px;
+	font-weight: bold;	
 }
 
 #ocean {
