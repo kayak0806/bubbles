@@ -101,28 +101,29 @@ function play(state){
 
 //*** Doing stuff *** 
 
+//set pause/play mouseover action
+for (var i = bubbles.length - 1; i >= 0; i--) {	
+	bubbles[i].onmouseover=function() {
+		var title = this.getElementsByTagName("a")[0].getAttribute('title')
+		pause(getState(title)); 
+	}
+	bubbles[i].onmouseout=function() {
+		var title = this.getElementsByTagName("a")[0].getAttribute('title')
+		play(getState(title)); 
+	}
+}
 // Animate state
-function move(state){
+function animate(state){
 	setInterval(function() {
 		updateState(state)
 		updateCSS(state)
 	},100)}
 
-for (var i = bubbles.length - 1; i >= 0; i--) {
-	var title = bubbles[i].getElementsByTagName("a")[0].getAttribute('title')
-	bubbles[i].onmouseover=function() {
-		pause(getState(title)); 
-		console.log(title)
-	}
-	bubbles[i].onmouseout=function() {
-		play(getState(title)); 
-	}
-}
 for (var key in bubbleStates){
 	state = getState(key)
 	updateState(state)
 	updateCSS(state)
-	move(getState(key))	
+	animate(getState(key))	
 }
 
 // *** Playing ***
