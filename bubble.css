@@ -26,21 +26,47 @@ div {
 	line-height: 45px;
 	letter-spacing: 10px;
 	text-transform: uppercase;
-	margin-left: 100px;
+	float: left;
 }
-#sorter {
-	background-color: green;
-	padding: 0px;
-	margin: 0px;
+#header button {
+	text-align: center;
+	line-height: 45px;
+	letter-spacing: 5px;
+	text-transform: uppercase;
+	float: left;
+	border-radius: 45px;
+	border-width: 0px;
 	width: 90px;
 	height: 90px;
-	border-radius: 90px;	
-
+	background-color: green;
+	margin-right: 10px;
 }
-#sorter p{
+#header button:focus{
+	outline:none;
+}
+#header button:active{
+	background-color: red;
+}
+#header button:hover{
+	background-color: blue;
+}
+
+#pauseCheck{
 	text-align: center;
-	line-height: 57px;
-	font-weight: bold;	
+	line-height: 29px;
+	letter-spacing: 5px;
+	text-transform: uppercase;
+	float: left;
+	border-radius: 45px;
+	border-width: 0px;
+	width: 90px;
+	height: 90px;
+	background-color: green;
+	margin-right: 10px;
+	font-size: 15px;
+}
+#header label input {
+	visibility: hidden;
 }
 
 #ocean {
